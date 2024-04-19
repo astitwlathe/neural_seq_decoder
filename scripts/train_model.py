@@ -2,8 +2,11 @@
 modelName = 'speechBaseline4'
 
 args = {}
-args['outputDir'] = '/oak/stanford/groups/henderj/stfan/logs/speech_logs/' + modelName
-args['datasetPath'] = '/oak/stanford/groups/henderj/fwillett/speech/ptDecoder_ctc'
+# args['outputDir'] = '/oak/stanford/groups/henderj/stfan/logs/speech_logs/' + modelName
+# args['datasetPath'] = '/oak/stanford/groups/henderj/fwillett/speech/ptDecoder_ctc'
+args['outputDir'] = '/home/aslathe/Miscellaneous/aslathe/SpeechBMI/Dataset/pickle_data/speech_logs/' + modelName
+args['datasetPath'] = '/home/aslathe/Miscellaneous/aslathe/SpeechBMI/Dataset/pickle_data/ptDecoder_ctc'
+
 args['seqLen'] = 150
 args['maxTimeSeriesLen'] = 1200
 args['batchSize'] = 64
@@ -24,6 +27,6 @@ args['kernelLen'] = 32
 args['bidirectional'] = True
 args['l2_decay'] = 1e-5
 
-from neural_decoder.neural_decoder_trainer import trainModel
+from src.neural_decoder.neural_decoder_trainer import trainModel
 
 trainModel(args)
