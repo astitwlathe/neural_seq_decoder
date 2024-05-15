@@ -9,9 +9,10 @@ import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
 
-from .model import GRUDecoder
+# from .model import GRUDecoder
 from .dataset import SpeechDataset
 
+from .lightning_model import LightningModel
 
 def getDatasetLoaders(
     datasetName,
@@ -69,7 +70,21 @@ def trainModel(args):
         args["batchSize"],
     )
 
-    model = GRUDecoder(
+    # model = GRUDecoder(
+    #     neural_dim=args["nInputFeatures"],
+    #     n_classes=args["nClasses"],
+    #     hidden_dim=args["nUnits"],
+    #     layer_dim=args["nLayers"],
+    #     nDays=len(loadedData["train"]),
+    #     dropout=args["dropout"],
+    #     device=device,
+    #     strideLen=args["strideLen"],
+    #     kernelLen=args["kernelLen"],
+    #     gaussianSmoothWidth=args["gaussianSmoothWidth"],
+    #     bidirectional=args["bidirectional"],
+    # ).to(device)
+
+    model = LightningModel(
         neural_dim=args["nInputFeatures"],
         n_classes=args["nClasses"],
         hidden_dim=args["nUnits"],
@@ -81,8 +96,7 @@ def trainModel(args):
         kernelLen=args["kernelLen"],
         gaussianSmoothWidth=args["gaussianSmoothWidth"],
         bidirectional=args["bidirectional"],
-    ).to(device)
-
+    )
     loss_ctc = torch.nn.CTCLoss(blank=0, reduction="mean", zero_infinity=True)
     optimizer = torch.optim.Adam(
         model.parameters(),
@@ -218,7 +232,21 @@ def loadModel(modelDir, nInputLayers=24, device="cuda"):
     with open(modelDir + "/args", "rb") as handle:
         args = pickle.load(handle)
 
-    model = GRUDecoder(
+    # model = GRUDecoder(
+    #     neural_dim=args["nInputFeatures"],
+    #     n_classes=args["nClasses"],
+    #     hidden_dim=args["nUnits"],
+    #     layer_dim=args["nLayers"],
+    #     nDays=nInputLayers,
+    #     dropout=args["dropout"],
+    #     device=device,
+    #     strideLen=args["strideLen"],
+    #     kernelLen=args["kernelLen"],
+    #     gaussianSmoothWidth=args["gaussianSmoothWidth"],
+    #     bidirectional=args["bidirectional"],
+    # ).to(device)
+
+    model = LightningModel(
         neural_dim=args["nInputFeatures"],
         n_classes=args["nClasses"],
         hidden_dim=args["nUnits"],
@@ -230,7 +258,7 @@ def loadModel(modelDir, nInputLayers=24, device="cuda"):
         kernelLen=args["kernelLen"],
         gaussianSmoothWidth=args["gaussianSmoothWidth"],
         bidirectional=args["bidirectional"],
-    ).to(device)
+    )
 
     model.load_state_dict(torch.load(modelWeightPath, map_location=device))
     return model
